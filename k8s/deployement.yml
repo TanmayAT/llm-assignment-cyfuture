@@ -26,7 +26,7 @@ spec:
             - name: PYTHONPATH    # Added PYTHONPATH
               value: /app
           command: ["uvicorn"]    # Added explicit command
-          args: ["src.endpoint:builder", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+          args: ["endpoint:builder", "--host", "0.0.0.0", "--port", "8000", "--reload"]
           volumeMounts:
             - name: src-code
               mountPath: /app/src
@@ -50,7 +50,7 @@ spec:
       volumes:
         - name: src-code
           hostPath:
-            path: /home/vaidikpandeytt/llm-assignment-cyfuture/src
+            path: /home/vaidikpandeytt/llm-assignment-cyfuture
             type: Directory
         - name: model-data
           hostPath:

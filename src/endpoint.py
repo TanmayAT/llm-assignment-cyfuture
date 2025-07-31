@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware import Middleware
 from pydantic import BaseModel, Field
 from typing import Optional
-from .model import text_generator
+from model import text_generator
 
 # Define request/response models
 class TextGenerationRequest(BaseModel):
