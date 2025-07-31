@@ -16,7 +16,7 @@ RUN pip install --no-cache-dir -r requirements.txt \
     && rm -rf ~/.cache/pip/*
 
 # Copy only the src directory
-COPY src/ /app/src/
+COPY . .
 
 # Create models directory
 RUN mkdir -p /app/models
