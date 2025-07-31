@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: text-generation-api
+spec:
+  replicas: 3  
+  selector:
+    matchLabels:
+      app: textgen
+  template:
+    metadata:
+      labels:
+        app: textgen
+    spec:
+      containers:
+        - name: textgen
+          image: text-generation-api:latest
+    
+          ports:
+            - containerPort: 8000
+          env:
+            - name: ENVIRONMENT
+              value: development
+            - name: MODEL_PATH
+              value: /app/models
+          volumeMounts:
+            - name: src-code
+              mountPath: /app/src
+            - name: model-data
+              mountPath: /app/models
+          resources:
+            limits:
+              memory: "4Gi"
+            requests:
+              memory: "2Gi"
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8000
+            initialDelaySeconds: 40
+            periodSeconds: 30
+            timeoutSeconds: 10
+            failureThreshold: 3
+      volumes:
+        - name: src-code
+          hostPath:
+            path: ./src  
+        - name: model-data
+          hostPath:
+            path: ./models  
