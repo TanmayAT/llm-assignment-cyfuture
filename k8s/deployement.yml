@@ -15,7 +15,7 @@ spec:
       containers:
         - name: textgen
           image: text-generation-api:latest
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Never  # Changed to Never for local images
           ports:
             - containerPort: 8000
           env:
@@ -23,6 +23,10 @@ spec:
               value: development
             - name: MODEL_PATH
               value: /app/models
+            - name: PYTHONPATH    # Added PYTHONPATH
+              value: /app
+          command: ["uvicorn"]    # Added explicit command
+          args: ["src.endpoint:builder", "--host", "0.0.0.0", "--port", "8000", "--reload"]
           volumeMounts:
             - name: src-code
               mountPath: /app/src
@@ -31,20 +35,24 @@ spec:
           resources:
             limits:
               memory: "4Gi"
+              cpu: "2"
             requests:
               memory: "2Gi"
+              cpu: "1"
           readinessProbe:
             httpGet:
               path: /
               port: 8000
-            initialDelaySeconds: 40
+            initialDelaySeconds: 60  # Increased delay
             periodSeconds: 30
             timeoutSeconds: 10
             failureThreshold: 3
       volumes:
         - name: src-code
           hostPath:
-            path: ./src  
+            path: /home/vaidikpandeytt/llm-assignment-cyfuture/src
+            type: Directory
         - name: model-data
           hostPath:
-            path: ./models  
+            path: /home/vaidikpandeytt/llm-assignment-cyfuture/models
+            type: DirectoryOrCreate
