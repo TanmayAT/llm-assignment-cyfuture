@@ -2,14 +2,24 @@ FROM python:3.9-slim
 
 WORKDIR /app
 
+# Install only essential system packages
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
 # Copy requirements first for better caching
 COPY requirements.txt .
 
-# Install dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+# Install dependencies with optimizations
+RUN pip install --no-cache-dir -r requirements.txt \
+    && pip cache purge \
+    && rm -rf ~/.cache/pip/*
 
-# Copy the rest of the application
-COPY . .
+# Copy only the src directory
+COPY src/ /app/src/
+
+# Create models directory
+RUN mkdir -p /app/models
 
 # Expose the port
 EXPOSE 8000
